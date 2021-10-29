@@ -13,8 +13,8 @@ Alguns serviços provisionados possuem custo, e a responsabilidade de gerir este
 
 ## FAQ
 - Os exemplos estão escritos em qual linguagem?
-R. Todos os exemplos de infraestrutura como código estão escritos em Terraform.
+	R. Todos os exemplos de infraestrutura como código estão escritos em Terraform.
 - Qual provedor de nuvem pública está contemplado nos exemplo:
-R. Neste momento, apenas a AWS está contemplada.
+	R. Neste momento, apenas a AWS está contemplada.
 - Quem é o responsável por eventuais custos com o provisionamento dos recursos?
-R. O responsável pelo provisionamento e/ou responsável pela conta no provedor.
+	R. O responsável pelo provisionamento e/ou responsável pela conta no provedor.
