@@ -6,10 +6,13 @@ Você pode estar se perguntando: **Por qual motivo ter um repositório com exemp
 ## Sobre o repositório
 - Na branch main estão os códigos 100% funcionais.
 - Cada código possui um README, onde estão os detalhes de como utilizar o código.
-- Neste momento os exemplos utilizados estão escritos em Terraform.
+- Neste momento os exemplos utilizados estão escritos em Terraform e Cloudformation.
 
 ## Atenção
 Alguns serviços provisionados possuem custo, e a responsabilidade de gerir estes custos é de cada responsável pela sua conta.
+
+## Relação dos repositórios
+- [site estático com S3](AWS/terraform/s3-site-estatico)
 
 ## FAQ
 - Os exemplos estão escritos em qual linguagem?
