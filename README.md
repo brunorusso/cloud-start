@@ -15,7 +15,7 @@ Alguns serviços provisionados possuem custo, e a responsabilidade de gerir este
 - [site estático com S3](AWS/terraform/s3-site-estatico)
 - [Cria EC2 com User Data](AWS/terraform/ec2-with-userdata)
 - [Cria EC2 com Launch Configuration](AWS/terraform/ec2-launch-configuration)
-- [Cria VPC + Subnet + Router Table + Internet Gateway + Nat Gateway](AWS/terraform/vpc-subnet-route-tables)
+- [Cria VPC + Subnet + Router Table + Internet Gateway + Nat Gateway](AWS/cloudformation/vpc-subnet-route-tables)
 
 ## FAQ
 - Os exemplos estão escritos em qual linguagem?
