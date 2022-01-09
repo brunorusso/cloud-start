@@ -1,0 +1,328 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Cria VPC, Subnets, InternetGateway e tabelas de roteamento basicas'
+
+Parameters:
+  EnvironmentName:
+    Description: "Nome do Ambiente"
+    Type: String
+    Default: "Producao"
+
+  ApplicationName:
+    Description: "Nome da aplicacao que usa este recurso"
+    Type: String
+    Default: "Completa"
+
+  VpcCIDR:
+    Description: "Enderecamento da rede"
+    Type: String
+    Default: 10.0.0.0/16
+
+  PrivateSubnet1CIDR:
+    Description: "SubRede Privada 1"
+    Type: String
+    Default: 10.0.0.0/24
+
+  PrivateSubnet2CIDR:
+    Description: "SubRede Privada 2"
+    Type: String
+    Default: 10.0.1.0/24
+  
+  PrivateSubnet3CIDR:
+    Description: "SubRede Privada 3"
+    Type: String
+    Default: 10.0.2.0/24
+
+  PublicSubnet1CIDR:
+    Description: "SubRede Publica 1"
+    Type: String
+    Default: 10.0.4.0/24
+
+  PublicSubnet2CIDR:
+    Description: "SubRede Publica 2"
+    Type: String
+    Default: 10.0.5.0/24
+  
+  PublicSubnet3CIDR:
+    Description: "SubRede Publica 3"
+    Type: String
+    Default: 10.0.6.0/24
+
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Ambiente
+          Value: !Ref EnvironmentName
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+        - Key: Name
+          Value: !Ref EnvironmentName 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Ambiente
+          Value: !Ref EnvironmentName
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Ref EnvironmentName 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Public-AZ1 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref PublicSubnet2CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Public-AZ2 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  PublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 2, !GetAZs  '' ]
+      CidrBlock: !Ref PublicSubnet3CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ3)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Public-AZ3 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Private-AZ1 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Private-AZ2 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+  
+  PrivateSubnet3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 2, !GetAZs  '' ]
+      CidrBlock: !Ref PrivateSubnet3CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Private Subnet (AZ3)
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Private-AZ3 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Public Routes
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Tabela-Padrao 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+  PublicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet3
+
+
+  NoIngressSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "Bloqueio Total"
+      GroupDescription: "Security group sem regras de ingress"
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Ambiente
+          Value: !Sub ${EnvironmentName} Public Routes
+        - Key: ApplicationName
+          Value: !Ref ApplicationName 
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-Tabela-Padrao 
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+
+Outputs:
+  VPC:
+    Description: VPC criada
+    Value: !Ref VPC
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:vpc-id"
+
+  SecurityGroup:
+    Description: Security group sem regras de ingress
+    Value: !Ref NoIngressSecurityGroup
+
+  PublicSubnet1:
+    Description: Subnet Publica na Zona-a
+    Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-subnet1"
+
+  PublicSubnet2:
+    Description: Subnet Publica na Zona-b
+    Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-subnet2"
+
+  PublicSubnet3:
+    Description: Subnet Publica na Zona-c
+    Value: !Ref PublicSubnet3
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-subnet3"
+
+  PrivateSubnet1:
+    Description: Subnet Publica na Zona-a
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-subnet1"
+
+  PrivateSubnet2:
+    Description: Subnet Publica na Zona-b
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-subnet2"
+
+  PrivateSubnet3:
+    Description: Subnet Publica na Zona-c
+    Value: !Ref PrivateSubnet3
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-subnet3"
+
+  CIDRSubnetPublica1:
+    Description: CIDR da Subnet Publica na Zona-a
+    Value: !Ref PublicSubnet1CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-cidr1"
+
+  CIDRSubnetPublica2:
+    Description: CIDR da Subnet Publica na Zona-b
+    Value: !Ref PublicSubnet2CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-cidr2"
+
+  CIDRSubnetPublica3:
+    Description: CIDR da Subnet Publica na Zona-c
+    Value: !Ref PublicSubnet3CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:public-cidr3"
+
+  CIDRSubnetPrivada1:
+    Description: CIDR da Subnet Privada na Zona-a
+    Value: !Ref PrivateSubnet1CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-cidr1"
+
+  CIDRSubnetPrivada2:
+    Description: CIDR da Subnet Privada na Zona-b
+    Value: !Ref PrivateSubnet2CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-cidr2"
+
+  CIDRSubnetPrivada3:
+    Description: CIDR da Subnet Privada na Zona-c
+    Value: !Ref PrivateSubnet3CIDR
+    Export:
+      Name: !Sub "${EnvironmentName}:${ApplicationName}:private-cidr3"
+
