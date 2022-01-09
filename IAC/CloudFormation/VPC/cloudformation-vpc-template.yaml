@@ -3,32 +3,42 @@ Parameters:
   EnvironmentName:
     Description: An environment name that is prefixed to resource names
     Type: String
-    Default: "Producao"
+    Default: "Prod"
 
   VpcCIDR:
-    Description: Enderecamento da rede
+    Description: Network address
     Type: String
     Default: 10.0.0.0/16
 
   PrivateSubnet1CIDR:
-    Description: SubRede Privada 1
+    Description: SubNet Private 1
     Type: String
     Default: 10.0.0.0/24
 
   PrivateSubnet2CIDR:
-    Description: SubRede Privada 2
+    Description: SubNet Private 2
     Type: String
     Default: 10.0.1.0/24
 
   PublicSubnet1CIDR:
-    Description: SubRede Publica 1
+    Description: SubNet Public 1
     Type: String
     Default: 10.0.3.0/24
 
   PublicSubnet2CIDR:
-    Description: SubRede Publica 2
+    Description: SubNet Public 2
     Type: String
     Default: 10.0.4.0/24
+
+  DataSubnet1CIDR:
+    Description: DataNet Private 1
+    Type: String
+    Default: 10.0.5.0/25
+
+  DataSubnet2CIDR:
+    Description: DataNet Private 2
+    Type: String
+    Default: 10.0.6.0/25
 
 Resources:
   VPC:
@@ -38,14 +48,14 @@ Resources:
       EnableDnsSupport: true
       EnableDnsHostnames: true
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Ref EnvironmentName
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Ref EnvironmentName
 
   InternetGatewayAttachment:
@@ -62,7 +72,7 @@ Resources:
       CidrBlock: !Ref PublicSubnet1CIDR
       MapPublicIpOnLaunch: true
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
 
   PublicSubnet2:
@@ -73,7 +83,7 @@ Resources:
       CidrBlock: !Ref PublicSubnet2CIDR
       MapPublicIpOnLaunch: true
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
 
   PrivateSubnet1:
@@ -84,7 +94,7 @@ Resources:
       CidrBlock: !Ref PrivateSubnet1CIDR
       MapPublicIpOnLaunch: false
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Sub ${EnvironmentName} Private Subnet (AZ1)
 
   PrivateSubnet2:
@@ -95,8 +105,30 @@ Resources:
       CidrBlock: !Ref PrivateSubnet2CIDR
       MapPublicIpOnLaunch: false
       Tags:
-        - Key: Ambiente
+        - Key: Environment
           Value: !Sub ${EnvironmentName} Private Subnet (AZ2)
+
+  DataSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      CidrBlock: !Ref DataSubnet1CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Environment
+          Value: !Sub ${EnvironmentName} Data Subnet (AZ1)
+
+  DataSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs  '' ]
+      CidrBlock: !Ref DataSubnet2CIDR
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Environment
+          Value: !Sub ${EnvironmentName} Data Subnet (AZ2)
 
   NatGateway1EIP:
     Type: AWS::EC2::EIP
